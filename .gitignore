@@ -16,9 +16,7 @@
 Thumbs.db
 
 node_modules
-
-
-db/
+data
 
 .env
 .env.local
