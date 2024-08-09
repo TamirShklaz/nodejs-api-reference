@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { db } from "../../../db/drizzle";
 import { todos } from "../../../db/schema";
 import { eq } from "drizzle-orm";
+import { tryCatch } from "../../utils/try-catch";
+import { NotFoundError } from "../../errors/not-found.error";
 
 const formatTodo = (todo: typeof todos.$inferSelect, req: Request) => {
   return { ...todo, url: `${req.protocol}://${req.get("host")}${req.baseUrl}/${todo.id}` };
@@ -21,14 +23,14 @@ export const createTodo = async (req: Request, res: Response) => {
   res.status(201).send(formatTodo(newTodo, req));
 };
 
-export const getTodo = async (req: Request, res: Response) => {
+export const getTodo = tryCatch(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const todo = await db.query.todos.findFirst({ where: eq(todos.id, id) });
   if (!todo) {
-    return res.status(404).send(`Todo with ID ${id} not found`);
+    throw new NotFoundError(`Todo with ID ${id} not found`);
   }
   return res.status(200).send(formatTodo(todo, req));
-};
+});
 
 export const deleteTodo = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
