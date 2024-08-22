@@ -25,7 +25,7 @@ export const getTodo = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const todo = await db.query.todos.findFirst({ where: eq(todos.id, id) });
   if (!todo) {
-    return res.status(404).send(`Todo with ID ${id} not found`);
+    return res.status(404).send("Todo not found");
   }
   return res.status(200).send(formatTodo(todo, req));
 };
