@@ -2,6 +2,6 @@ POST http://localhost:3000/api/v1/todos
 Content-Type: application/json
 
 {
-  "title": "Do the dishes",
+  "name": "Do the dishes",
   "order": 1
 }

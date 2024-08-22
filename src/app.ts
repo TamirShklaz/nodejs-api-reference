@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import v1TodoRoutes from "./api/v1/todo.routes";
-import { errorHandler } from "./middleware/error-handler.middleware";
+import v2TodoRoutes from "./api/v2/todo.routes";
 
 const app = express();
 
@@ -18,7 +18,6 @@ app.get("/healthcheck", async (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/todos", v1TodoRoutes);
-
-app.use(errorHandler);
+app.use("/api/v2/todos", v2TodoRoutes);
 
 export default app;
