@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { db } from "../../../db/drizzle";
-import { todos } from "../../../db/schema";
+import { db } from "../../../../db/drizzle";
+import { todos } from "../../../../db/schema";
 import { asc, eq, gt } from "drizzle-orm";
-import { tryCatch } from "../../utils/try-catch";
-import { NotFoundError } from "../../errors/not-found.error";
-import { CreateTodoSchema } from "../../schemas/create-todo.schema";
-import { GetTodosQueryParams } from "../../schemas/get-todos-query-params.schema";
-import { cursorSchema } from "../../schemas/cursor.schema";
-import { decodeCursor, encodeCursor } from "../../utils/cursor";
+import { tryCatch } from "../../../utils/try-catch";
+import { NotFoundError } from "../../../errors/not-found.error";
+import { CreateTodoSchema } from "../../../schemas/create-todo.schema";
+import { GetTodosQueryParams } from "../../../schemas/get-todos-query-params.schema";
+import { cursorSchema } from "../../../schemas/cursor.schema";
+import { decodeCursor, encodeCursor } from "../../../utils/cursor";
 
-const formatTodo = (todo: typeof todos.$inferSelect, req: Request<any, any, any, any>) => {
+const formatTodo = (todo: typeof todos.$inferSelect, req: Request) => {
   return { ...todo, url: `${req.protocol}://${req.get("host")}${req.baseUrl}/${todo.id}` };
 };
 
@@ -19,11 +19,10 @@ const formatTodo = (todo: typeof todos.$inferSelect, req: Request<any, any, any,
 // cursor based
 // page base
 
-
 export const getCursor = (cursor: string) => {
   const decodedCursor = cursor ? decodeCursor(cursor) : undefined;
   console.log("DECODED CURSOR", decodedCursor);
-  const { success, data, error } = cursorSchema.safeParse(decodedCursor);
+  const { data, error } = cursorSchema.safeParse(decodedCursor);
   if (error) {
     console.warn("Invalid cursor", error);
   }
@@ -40,22 +39,25 @@ export const getTodos = tryCatch(async (req: Request<{}, {}, {}, GetTodosQueryPa
   const results = await db.query.todos.findMany({ orderBy: [asc(todos.id)], where, limit: limit });
   const formatedTodos = results.map((todo) => formatTodo(todo, req));
 
-
-  const lastId = results[results.length - 1].id;
+  const lastId = results[results.length - 1]?.id;
   const encodedCursor = encodeCursor({ id: lastId });
 
-  const next = results.length === limit ? `${req.protocol}://${req.get("host")}${req.baseUrl}?cursor=${encodedCursor}&limit=${limit}` : undefined;
+  const next =
+    results.length === limit
+      ? `${req.protocol}://${req.get("host")}${req.baseUrl}?cursor=${encodedCursor}&limit=${limit}`
+      : undefined;
 
   const response = {
     todos: formatedTodos,
     numTodos: formatedTodos.length,
     next,
-    limit
+    nextCursor: encodedCursor,
+    limit,
   };
   res.status(200).send(response);
 });
 
-export const createTodo = tryCatch(async (req: Request<{}, {}, CreateTodoSchema>, res: Response) => {
+export const createTodo = tryCatch(async (req: Request<unknown, unknown, CreateTodoSchema>, res: Response) => {
   const { title, order, completed } = req.body;
   const sqlRes = await db.insert(todos).values({ title, order, completed }).returning();
   const newTodo = sqlRes[0];

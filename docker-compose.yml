@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
     image: postgres
@@ -9,7 +8,7 @@ services:
       - 5432:5432
 
     environment:
-      - POSTGRES_DB=todo_db
+      - POSTGRES_DB=nodejs_ref_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
