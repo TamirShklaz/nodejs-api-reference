@@ -8,8 +8,9 @@ import { CreateTodoSchema } from "../../../schemas/create-todo.schema";
 import { GetTodosQueryParams } from "../../../schemas/get-todos-query-params.schema";
 import { cursorSchema } from "../../../schemas/cursor.schema";
 import { decodeCursor, encodeCursor } from "../../../utils/cursor";
+import { AuthenticatedRequest } from "../../../middleware/auth.middleware";
 
-const formatTodo = (todo: typeof todos.$inferSelect, req: Request) => {
+const formatTodo = (todo: typeof todos.$inferSelect, req: Request<any, any, any, any>) => {
   return { ...todo, url: `${req.protocol}://${req.get("host")}${req.baseUrl}/${todo.id}` };
 };
 
@@ -29,7 +30,7 @@ export const getCursor = (cursor: string) => {
   return data?.id;
 };
 
-export const getTodos = tryCatch(async (req: Request<{}, {}, {}, GetTodosQueryParams>, res: Response) => {
+export const getTodos = tryCatch(async (req: Request<any, any, any, GetTodosQueryParams>, res: Response) => {
   const { cursor, limit } = req.query;
   console.log("CURSOR", cursor);
 
@@ -57,12 +58,14 @@ export const getTodos = tryCatch(async (req: Request<{}, {}, {}, GetTodosQueryPa
   res.status(200).send(response);
 });
 
-export const createTodo = tryCatch(async (req: Request<unknown, unknown, CreateTodoSchema>, res: Response) => {
+export const createTodo = async (req: AuthenticatedRequest<unknown, unknown, CreateTodoSchema>, res: Response) => {
   const { title, order, completed } = req.body;
+  // const token = req.token;
+
   const sqlRes = await db.insert(todos).values({ title, order, completed }).returning();
   const newTodo = sqlRes[0];
   res.status(201).send(formatTodo(newTodo, req));
-});
+};
 
 export const getTodo = tryCatch(async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);

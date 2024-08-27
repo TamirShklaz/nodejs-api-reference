@@ -4,6 +4,10 @@ import { LoginSchema } from "../../../schemas/login.schema";
 import { StatusCodes } from "http-status-codes";
 import { AuthError } from "../../../errors/auth.error";
 
+// Req params
+// Res body
+// Req body
+// Req query
 export const login = async (req: Request<unknown, unknown, LoginSchema>, res: Response) => {
   const { email, password } = req.body;
 

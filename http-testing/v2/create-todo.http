@@ -1,7 +1,8 @@
 POST http://localhost:3000/api/v2/todos
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzI0NzcyNzI0LCJleHAiOjE3MjQ3NzQ1MjR9.qpDuCBj_nQgfbKxitzQKKwaFcrfjx_uKxizjV6Fu0x0
 
 {
-  "name": "Do the dishes",
+  "title": "Do the dishes",
   "order": 1
 }
