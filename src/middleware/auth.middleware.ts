@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export interface AuthenticatedRequest<P = any, ResBody = any, ReqBody = any, ReqQuery = any>
   extends Request<P, ResBody, ReqBody, ReqQuery> {
   token?: string | jwt.JwtPayload;
+  userId?: string;
 }
 
 export const auth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -25,6 +26,7 @@ export const auth = (req: AuthenticatedRequest, res: Response, next: NextFunctio
       throw new AuthError("Invalid token");
     }
     req.token = decoded;
+    req.userId = (decoded as any).id; // Extract userId from the token
     next();
   });
 };

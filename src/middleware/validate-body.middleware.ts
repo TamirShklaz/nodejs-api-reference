@@ -7,7 +7,7 @@ export const validateBody =
   (req: Request, res: Response, next: NextFunction) => {
     const { data, error } = schema.safeParse(req.body);
     if (error) {
-      throw new InvalidBodyError("Invalid Params", error.message);
+      throw new InvalidBodyError("Invalid Params", error.errors);
     }
     req.body = data;
     next();

@@ -1,10 +1,9 @@
-POST http://localhost:3000/api/v1/todo
+POST http://localhost:3000/api/v1/todo-list/c8d5a293-ff1d-4cd9-a2aa-c73940cbcc76/share
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoa2xhenRAZ21haWwuY29tIiwiaWQiOiIzMTNmYzAzNy0yYmY5LTQxZWMtODkyMS0zODI5NjU2ZmZkMDciLCJpYXQiOjE3Mjc4MDQ5NTMsImV4cCI6MTcyNzgxNDk1M30.7yl-bVigvN1LJ0CYvg3jVaacMQki_rmA9p-3s5_cK8o
 
 {
-  "title": "Do the dishes",
-  "description": "Many dishes",
-  "todoListId": "c8d5a293-ff1d-4cd9-a2aa-c73940cbcc76",
-  "priority": "high"
+  "userIds": [
+    "313fc037-2bf9-41ec-8921-3829656ffd07"
+  ]
 }

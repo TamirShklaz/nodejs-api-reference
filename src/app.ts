@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import v1TodoRoutes from "./api/v1/todo.routes";
-import v2TodoRoutes from "./api/v2/todo/todo.routes";
-import authRoutes from "./api/v2/auth/auth.routes";
+import authRoutes from "@/api/v1/auth/auth.routes";
+import todoRoutes from "@/api/v1/todo/todo.routes";
+import todoListRoutes from "@/api/v1/todo-list/todo-list.router";
 
 const app = express();
 
@@ -18,8 +18,9 @@ app.get("/healthcheck", async (req: Request, res: Response) => {
   res.status(200).send("OK");
 });
 
-app.use("/api/v1/todos", v1TodoRoutes);
-app.use("/api/v2/todos", v2TodoRoutes);
-app.use("/api/v2/auth", authRoutes);
+// app.use("/api/v1/todos", v1TodoRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/todo", todoRoutes);
+app.use("/api/v1/todo-list", todoListRoutes);
 
 export default app;

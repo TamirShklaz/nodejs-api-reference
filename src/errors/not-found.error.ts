@@ -1,6 +1,13 @@
+import { StatusCodes } from "http-status-codes";
+
 export class NotFoundError extends Error {
-  constructor(message: string) {
+  status: number;
+  details?: string;
+
+  constructor(message: string, details?: string) {
     super(message);
     this.name = "NotFoundError";
+    this.status = StatusCodes.NOT_FOUND;
+    this.details = details;
   }
 }

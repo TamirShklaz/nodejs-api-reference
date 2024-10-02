@@ -6,23 +6,21 @@ import { AuthError } from "../errors/auth.error";
 
 export const errorHandler = async (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
-  console.log("Invalid body", err instanceof InvalidBodyError);
   if (err instanceof NotFoundError) {
-    return res.status(StatusCodes.NOT_FOUND).send({ message: "Not found" });
+    return res.status(StatusCodes.NOT_FOUND).json({ message: "Not found" });
   }
   if (err instanceof InvalidBodyError) {
-    return res.status(StatusCodes.BAD_REQUEST).send({
-      status: err.status,
+    return res.status(StatusCodes.BAD_REQUEST).json({
       message: err.message,
       details: err.details,
     });
   }
 
   if (err instanceof AuthError) {
-    return res.status(StatusCodes.UNAUTHORIZED).send({
+    return res.status(StatusCodes.UNAUTHORIZED).json({
       message: err.message,
     });
   }
 
-  return res.status(500).send("Something went wrong");
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
 };
